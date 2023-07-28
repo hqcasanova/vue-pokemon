@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .app-btn {
+    @apply text-center select-none outline-none disabled:pointer-events-none cursor-pointer;
+  }
+
+  .bg-primary-states {
+    @apply bg-primary hover:bg-dark-primary focus:bg-dark-primary active:bg-dark-primary disabled:bg-grey transition-colors;
+  }
+
+  .text-primary-states {
+    @apply text-primary hover:text-dark-primary focus:text-dark-primary active:text-dark-primary transition-colors;
+  }
+
+  .bg-secondary-states {
+    @apply text-secondary hover:text-dark-secondary focus:text-dark-secondary active:text-dark-secondary transition-colors;
+  }
+
+  .text-secondary-states {
+    @apply text-dark-secondary hover:text-darker-secondary focus:text-darker-secondary active:text-darker-secondary transition-colors;
+  }
+
+  .text-link {
+    @apply text-primary-states hover:underline focus:underline;
+  }
+
+  .min-mobile-dims {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+@layer base {
+  html {
+    @apply font-lato leading-6 antialiased;
+    font-size: 20px;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-light-primary;
+  }
+
+  h1 {
+    font-size: 62px;
+  }
+
+  h2 {
+    font-size: 48px;
+    font-weight: 700;
+  }
+
+  svg {
+    @apply inline w-auto h-[1em];
+  }
+}
