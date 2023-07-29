@@ -9,7 +9,7 @@ const keyValue = (item: any) => item[props.itemKey];
 </script>
 
 <template>
-  <ul class="item-list flex flex-col">
+  <ul class="item-grid grid gap-x-3.5 gap-y-5">
     <template v-if="items.length">
       <li
         v-for="item in items"
@@ -27,3 +27,9 @@ const keyValue = (item: any) => item[props.itemKey];
     </li>
   </ul>
 </template>
+
+<styles scoped lang="scss">
+.item-grid {
+  grid-template-columns: repeat(auto-fit, minmax(9.6rem, 1fr));
+}
+</styles>

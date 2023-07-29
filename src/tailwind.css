@@ -29,6 +29,10 @@
     @apply text-primary-states hover:underline focus:underline;
   }
 
+  .title-text {
+    @apply text-title font-bold;
+  }
+
   .min-mobile-dims {
     min-width: 48px;
     min-height: 48px;
@@ -37,22 +41,13 @@
 
 @layer base {
   html {
-    @apply font-lato leading-6 antialiased;
-    font-size: 20px;
+    @apply font-lato text-default text-black antialiased bg-light-primary;
+    line-height: 1.5;
     text-rendering: optimizeLegibility;
   }
 
-  body {
-    @apply bg-light-primary;
-  }
-
-  h1 {
-    font-size: 62px;
-  }
-
-  h2 {
-    font-size: 48px;
-    font-weight: 700;
+  #app {
+    @apply p-11;
   }
 
   svg {

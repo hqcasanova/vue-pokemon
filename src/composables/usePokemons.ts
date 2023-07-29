@@ -23,7 +23,8 @@ export default function (): UseTasks {
 
     try {
       error.value = '';
-      pokemons.value = await Api.fetchPokemons();
+      const rawPokemons = await Api.fetchPokemons();
+      pokemons.value = rawPokemons.map((raw) => Pokemon.fromRaw(raw.name, raw.url));
     } catch (exception) {
       error.value = exception as string | Error;
       pokemons.value = [];

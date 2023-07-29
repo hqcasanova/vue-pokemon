@@ -30,7 +30,21 @@ module.exports = {
       },
 
       fontSize: {
-        '4.5xl': '2.5rem',
+        default: '20px',
+        'title-xl': '3.1rem',
+        title: '2.4rem',
+      },
+
+      keyframes: {
+        loading: {
+          '0%': { transform: 'translateX(-100%)' },
+          '50%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
+
+      animation: {
+        loading: 'loading 1.5s cubic-bezier(0.2, 0.5, 0.4, 0.7) 0.1s infinite',
       },
     },
   },

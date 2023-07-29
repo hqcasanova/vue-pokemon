@@ -11,7 +11,7 @@ const router = createRouter({
       children: [
         {
           path: 'pokemon/:id?',
-          name: 'edit',
+          name: 'stats',
           props: true,
           component: () => import('../views/StatsView.vue'),
         },

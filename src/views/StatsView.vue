@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import usePokemons from '@/composables/usePokemons';
 import ActionModal from '@/components/structure/ActionModal.vue';
+import HeartSolid from '@/components/icons/HeartSolid.vue';
 
 import Stats from '@/models/Stats';
 
