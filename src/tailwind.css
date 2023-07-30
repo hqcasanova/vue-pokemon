@@ -34,8 +34,8 @@
   }
 
   .min-mobile-dims {
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 42px;
+    min-height: 42px;
   }
 }
 

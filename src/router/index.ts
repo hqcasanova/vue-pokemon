@@ -10,7 +10,7 @@ const router = createRouter({
       component: HomeView,
       children: [
         {
-          path: 'pokemon/:id?',
+          path: 'pokemon/:id',
           name: 'stats',
           props: true,
           component: () => import('../views/StatsView.vue'),

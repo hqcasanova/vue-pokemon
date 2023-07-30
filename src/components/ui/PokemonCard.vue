@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import brokenImg from '@/assets/broken.png';
+import LikeButton from '@/components/ui/LikeButton.vue';
 
 import { type Pokemon } from '@/models/Pokemon';
 
@@ -8,25 +9,44 @@ export type Props = Pokemon & {
   idLength?: number;
   noImgPath?: string;
 };
+export type Emits = {
+  (e: 'update:isLiked', keyValue: Props['isLiked']): void;
+};
+
 const props = withDefaults(defineProps<Props>(), {
-  idLength: 4,
+  idLength: 0,
   noImgPath: brokenImg,
 });
+const emit = defineEmits<Emits>();
 
 const imgIndex = ref<number>(0);
 const paddedId = computed(() => props.id.padStart(props.idLength, '0'));
+const readableName = computed(() => props.name.replace('-', ' '));
 const url = computed(() => props.imgUrls[imgIndex.value] || props.noImgPath);
+const isLikedModel = computed({
+  get() {
+    return props.isLiked;
+  },
+
+  set(newIsLiked: boolean) {
+    emit('update:isLiked', newIsLiked);
+  },
+});
 </script>
 
 <template>
-  <figure class="bg-white pt-[1.4em] pb-[1.1em] text-center">
+  <figure class="relative bg-white pt-[1.4em] pb-[1.1em] text-center">
+    <like-button
+      class="absolute top-0 right-0"
+      v-model="isLikedModel"
+    />
     <img
       class="w-[6.2em] h-auto mx-auto mb-[1.4em]"
       :src="url"
       @error="imgIndex++"
     />
     <figcaption class="leading-[1.25em] font-bold">
-      <span class="block first-letter:uppercase">{{ props.name }}</span>
+      <span class="block first-letter:uppercase">{{ readableName }}</span>
       <span class="text-dark-secondary">{{ paddedId }}</span>
     </figcaption>
   </figure>

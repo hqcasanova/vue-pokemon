@@ -1,21 +1,30 @@
-import Api from '@/api/index';
+import Api, { type Resource } from '@/api/index';
+import Stats from './Stats';
 
 export default class {
   id: string;
   name: string;
   imgUrls: string[];
   isLiked: boolean;
+  stats?: Stats;
 
-  static fromRaw(name: string = '', url: string = '') {
+  static fromResource({ name = '', url = '' }: Resource) {
     const id = Api.getId(url);
     return new this(id, name, Api.getImg(id));
   }
 
-  constructor(id: string, name: string, imgUrls: string[], isLiked: boolean = false) {
+  constructor(
+    id: string,
+    name: string = '',
+    imgUrls: string[] = [],
+    isLiked: boolean = false,
+    stats: Stats = new Stats({})
+  ) {
     this.id = id;
     this.name = name;
     this.imgUrls = imgUrls;
     this.isLiked = isLiked;
+    this.stats = stats;
   }
 }
 
@@ -25,4 +34,5 @@ export type Pokemon = {
   name: string;
   imgUrls: string[];
   isLiked: boolean;
+  stats?: Stats;
 };

@@ -1,34 +1,39 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import usePokemons from '@/composables/usePokemons';
 import ActionModal from '@/components/structure/ActionModal.vue';
-import HeartSolid from '@/components/icons/HeartSolid.vue';
+import LikeButton from '@/components/ui/LikeButton.vue';
 
-import Stats from '@/models/Stats';
+import Pokemon from '@/models/Pokemon';
 
 export type Props = {
   id: string;
 };
-const props = withDefaults(defineProps<Props>(), {
-  id: '',
-});
+const props = defineProps<Props>();
 
 const router = useRouter();
-const { fetchStats, isLoading, likePokemon } = usePokemons();
+const { isLoading, fetchPokemon, toggleLike } = usePokemons();
 
-const stats = ref<Stats>(new Stats({}));
+const pokemon = ref<Pokemon>(new Pokemon(''));
 const isNotFound = ref<boolean>(false);
+const isLikedModel = computed({
+  get() {
+    return pokemon.value.isLiked;
+  },
+
+  set() {
+    toggleLike(props.id);
+  },
+});
 
 onMounted(async () => {
-  if (props.id) {
-    const data = await fetchStats(props.id);
+  const data = await fetchPokemon(props.id);
 
-    if (!data) {
-      isNotFound.value = true;
-    } else {
-      stats.value = data;
-    }
+  if (!data) {
+    isNotFound.value = true;
+  } else {
+    pokemon.value = data;
   }
 });
 
@@ -52,7 +57,10 @@ const onCancelAction = () => {
           {{ isNotFound ? 'Pokemon could not be found' : 'Loading pokemon data...' }}
         </div>
 
-        <heart-solid @click="likePokemon(props.id)" />
+        <like-button
+          v-model="isLikedModel"
+          :disabled="isLoading"
+        />
         {{ stats }}
       </div>
     </template>

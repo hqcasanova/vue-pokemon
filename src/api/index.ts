@@ -1,9 +1,15 @@
 import axios from 'axios';
 import Stats from '@/models/Stats';
 
-type rawPokemon = {
+export type Resource = {
   name: string;
   url: string;
+};
+export type Paginated = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Resource[];
 };
 
 const HOST = JSON.parse(import.meta.env.VITE_API_HOST);
@@ -13,15 +19,17 @@ const IMG_PATHS = JSON.parse(import.meta.env.VITE_IMG_PATHS);
 const ID_REGEX = /\/(\d+)\/$/;
 
 export default {
-  fetchPokemons(): Promise<rawPokemon[]> {
-    return axios
-      .get(`${HOST}/pokemon`, {
-        params: {
-          limit: PAGE_SIZE,
-          offset: 0,
-        },
-      })
-      .then((response) => response.data.results);
+  fetchPokemons(url: string | null): Promise<Paginated> {
+    let params = {};
+
+    if (!url) {
+      url = `${HOST}/pokemon`;
+      params = {
+        limit: PAGE_SIZE,
+        offset: 0,
+      };
+    }
+    return axios.get(url, { params }).then((response) => response.data);
   },
 
   getId(url: string): string {
@@ -34,7 +42,7 @@ export default {
   },
 
   // TODO: not sure I understand the API
-  fetchStats(id: string): Promise<Stats> {
-    return axios.get(`${HOST}/stats`);
+  fetchPokemon(id: string): Promise<any> {
+    return axios.get(`${HOST}/pokemon/${id}`);
   },
 };

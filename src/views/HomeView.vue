@@ -8,7 +8,7 @@ import PokemonCard from '@/components/ui/PokemonCard.vue';
 
 import type Pokemon from '@/models/Pokemon';
 
-const { pokemons, isLoading, fetchPokemons } = usePokemons();
+const { pokemons, isLoading, countDigits, fetchPokemons, toggleLike } = usePokemons();
 const router = useRouter();
 
 onMounted(fetchPokemons);
@@ -45,10 +45,23 @@ const description = import.meta.env.VITE_META_DESCRIPTION;
     >
       <template #default="pokemon">
         <pokemon-card
-          class="rounded-lg"
+          class="rounded-lg h-[12.6rem]"
           v-bind="(pokemon as any)"
+          :id-length="countDigits"
           @click="onClick(pokemon)"
+          @update:is-liked="toggleLike(pokemon.id)"
         />
+      </template>
+
+      <template #after>
+        <li class="flex flex-col justify-center">
+          <button
+            class="app-btn py-3.5 font-bold text-black bg-primary-states rounded-lg"
+            @click="fetchPokemons"
+          >
+            Load more
+          </button>
+        </li>
       </template>
 
       <template #empty>

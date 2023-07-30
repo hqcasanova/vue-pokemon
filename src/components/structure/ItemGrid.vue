@@ -17,6 +17,7 @@ const keyValue = (item: any) => item[props.itemKey];
       >
         <slot v-bind="item"></slot>
       </li>
+      <slot name="after"></slot>
     </template>
 
     <li
