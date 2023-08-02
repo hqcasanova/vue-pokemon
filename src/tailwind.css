@@ -41,7 +41,7 @@
 
 @layer base {
   html {
-    @apply font-lato text-black antialiased bg-light-primary;
+    @apply font-lato text-black antialiased !bg-light-primary;
     font-size: 100%;
     line-height: 1.5;
     text-rendering: optimizeLegibility;
