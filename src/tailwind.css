@@ -41,10 +41,12 @@
 
 @layer base {
   html {
-    @apply font-lato text-black antialiased !bg-light-primary;
+    @apply font-lato text-black antialiased;
     font-size: 100%;
     line-height: 1.5;
     text-rendering: optimizeLegibility;
+    /* Explicitly forcing specificity as the important modifier is lost after build for some reason */
+    background-color: theme('colors.light-primary') !important;
   }
 
   #app {
