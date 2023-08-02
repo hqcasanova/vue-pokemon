@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Stats from '@/models/Stats';
 
 export type Resource = {
   name: string;
@@ -11,6 +10,11 @@ export type Paginated = {
   previous: string | null;
   results: Resource[];
 };
+export type StatData = {
+  base_stat: number;
+  effort: number;
+  stat: Resource;
+};
 
 const HOST = JSON.parse(import.meta.env.VITE_API_HOST);
 const PAGE_SIZE = JSON.parse(import.meta.env.VITE_PAGE_SIZE);
@@ -19,7 +23,20 @@ const IMG_PATHS = JSON.parse(import.meta.env.VITE_IMG_PATHS);
 const ID_REGEX = /\/(\d+)\/$/;
 
 export default {
-  fetchPokemons(url: string | null): Promise<Paginated> {
+  getId(url: string): number {
+    const idFragment = url.match(ID_REGEX);
+    return idFragment ? Number(idFragment[1]) : 0;
+  },
+
+  getImgs(id: string): string[] {
+    return IMG_PATHS.map((path: string) => `${IMG_HOST}${path}/${id}.png`);
+  },
+
+  getStats(stats: StatData[]) {
+    return stats.reduce((result, curr) => ({ ...result, [curr.stat.name]: curr.base_stat }), {});
+  },
+
+  async fetchPokemons(url: string | null): Promise<Paginated> {
     let params = {};
 
     if (!url) {
@@ -29,20 +46,13 @@ export default {
         offset: 0,
       };
     }
-    return axios.get(url, { params }).then((response) => response.data);
+
+    const response = await axios.get(url, { params });
+    return response.data;
   },
 
-  getId(url: string): string {
-    const idFragment = url.match(ID_REGEX);
-    return idFragment ? idFragment[1] : '';
-  },
-
-  getImg(id: string): string[] {
-    return IMG_PATHS.map((path: string) => `${IMG_HOST}${path}/${id}.png`);
-  },
-
-  // TODO: not sure I understand the API
-  fetchPokemon(id: string): Promise<any> {
-    return axios.get(`${HOST}/pokemon/${id}`);
+  async fetchPokemon(id: string): Promise<any> {
+    const response = await axios.get(`${HOST}/pokemon/${id}`);
+    return response.data;
   },
 };

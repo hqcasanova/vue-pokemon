@@ -3,7 +3,7 @@ import { onMounted } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
 import usePokemons from '@/composables/usePokemons';
 import LoadingBar from '@/components/ui/LoadingBar.vue';
-import ItemGrid from '@/components/structure/ItemGrid.vue';
+import ItemList from '@/components/structure/ItemList.vue';
 import PokemonCard from '@/components/ui/PokemonCard.vue';
 
 import type Pokemon from '@/models/Pokemon';
@@ -31,44 +31,42 @@ const description = import.meta.env.VITE_META_DESCRIPTION;
   </header>
 
   <main>
-    <p class="hidden font-bold">{{ description }}</p>
+    <p class="font-bold">{{ description }}</p>
 
     <loading-bar
       class="z-10 fixed top-0 left-0"
       :is-progress="isLoading"
     />
 
-    <item-grid
-      class="max-w-[62rem] my-5"
+    <item-list
+      class="grid gap-x-3.5 gap-y-5 grid-cols-[repeat(auto-fill,minmax(9.6rem,1fr))] items-center max-w-[62rem] my-5"
       :items="pokemons"
       item-key="id"
     >
-      <template #default="pokemon">
+      <template #default="pokemon: any">
         <pokemon-card
-          class="rounded-lg h-[12.6rem]"
-          v-bind="(pokemon as any)"
+          class="app-btn rounded-lg"
+          v-bind="pokemon"
           :id-length="countDigits"
           @click="onClick(pokemon)"
           @update:is-liked="toggleLike(pokemon.id)"
         />
       </template>
 
-      <template #after>
-        <li class="flex flex-col justify-center">
-          <button
-            class="app-btn py-3.5 font-bold text-black bg-primary-states rounded-lg"
-            @click="fetchPokemons"
-          >
-            Load more
-          </button>
-        </li>
+      <template #last>
+        <button
+          class="app-btn py-3.5 min-mobile-dims font-bold text-black bg-primary-states rounded-lg"
+          @click="fetchPokemons"
+        >
+          Load more
+        </button>
       </template>
 
       <template #empty>
         <strong>{{ isLoading ? 'Loading pokemons...' : 'No pokemons found' }}</strong>
       </template>
-    </item-grid>
+    </item-list>
 
-    <router-view />
+    <router-view v-if="pokemons.length" />
   </main>
 </template>

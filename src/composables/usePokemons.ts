@@ -1,11 +1,10 @@
 import { computed, ref, type ComputedRef, type Ref } from 'vue';
-import { useStorage } from '@vueuse/core';
+import useLikes from '@/composables/useLikes';
 import Api from '@/api';
 
 import Pokemon from '@/models/Pokemon';
 
 const pokemons = ref<Pokemon[]>([]);
-const storedLikes = useStorage<string[]>('likes', []);
 const error = ref<string | Error>('');
 const isLoading = ref<boolean>(false);
 const count = ref<number>(0);
@@ -16,16 +15,13 @@ type UseTasks = {
   isLoading: Ref<boolean>;
   error: Ref<string | Error>;
   countDigits: ComputedRef<number>;
-  isLiked: (id: Pokemon['id']) => boolean;
-  fetchPokemons: () => Promise<void>;
-  fetchPokemon: (id: Pokemon['id']) => Promise<Pokemon>;
+  fetchPokemons: () => void;
+  fetchPokemon: (id: Pokemon['id']) => Promise<Pokemon | undefined>;
   toggleLike: (id: Pokemon['id']) => void;
 };
 
 export default function (): UseTasks {
-  const isLiked = (id: Pokemon['id']) => {
-    return storedLikes.value.indexOf(id) !== -1;
-  };
+  const { isLiked, saveLiked } = useLikes();
 
   const countDigits = computed(() => {
     return count.value.toString().length;
@@ -34,7 +30,7 @@ export default function (): UseTasks {
   const hydrateResources = (results: any[]) => {
     return results.map((res) => {
       const pok = Pokemon.fromResource(res);
-      pok.isLiked = isLiked(pok.id);
+      pok.isLiked = isLiked(pok.id.toString());
       return pok;
     });
   };
@@ -60,10 +56,26 @@ export default function (): UseTasks {
   };
 
   const fetchPokemon = async (id: Pokemon['id']) => {
-    isLoading.value = true;
+    let pokemon = pokemons.value.find((pok) => pok.id === id);
 
+    if (pokemon && pokemon.stats) {
+      return pokemon;
+    }
+
+    isLoading.value = true;
     try {
-      return await Api.fetchPokemon(id);
+      error.value = '';
+      const data = await Api.fetchPokemon(id.toString());
+
+      if (pokemon) {
+        return pokemon.setStatsFromEndpoint(data);
+      }
+
+      pokemon = Pokemon.fromEndpoint(data);
+      pokemon.isLiked = isLiked(pokemon.id.toString());
+      return pokemon;
+    } catch (exception) {
+      error.value = exception as string | Error;
     } finally {
       isLoading.value = false;
     }
@@ -74,13 +86,7 @@ export default function (): UseTasks {
 
     if (pokemon) {
       pokemon.isLiked = !pokemon.isLiked;
-      const likeIndex = storedLikes.value.indexOf(id);
-
-      if (likeIndex === -1) {
-        storedLikes.value.push(id);
-      } else {
-        storedLikes.value.splice(likeIndex, 1);
-      }
+      saveLiked(id.toString());
     }
   };
 
@@ -89,7 +95,6 @@ export default function (): UseTasks {
     isLoading,
     error,
     countDigits,
-    isLiked,
     fetchPokemons,
     fetchPokemon,
     toggleLike,

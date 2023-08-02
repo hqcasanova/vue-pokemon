@@ -23,6 +23,7 @@ module.exports = {
         'darker-secondary': '#7689A4',
 
         liked: '#EF4444',
+        danger: '#F65959',
       },
 
       fontFamily: {
@@ -30,9 +31,9 @@ module.exports = {
       },
 
       fontSize: {
-        default: '20px',
-        'title-xl': '3.1rem',
+        default: '1rem',
         title: '2.4rem',
+        'title-xl': '3.1rem',
       },
 
       keyframes: {

@@ -16,12 +16,12 @@ const onClick = () => emit('update:modelValue', !props.modelValue);
 
 <template>
   <button
-    class="app-btn min-mobile-dims leading-none text-dark-secondary hover:text-liked"
+    class="app-btn min-mobile-dims leading-none text-dark-secondary hover:text-liked disabled:text-lightest-grey"
     :class="{ 'text-liked': props.modelValue }"
     @click.stop="onClick"
   >
     <heart-solid
-      class="stroke-current hover:sroke-current"
+      class="stroke-current"
       :class="props.modelValue ? 'fill-current' : 'fill-none'"
     />
   </button>

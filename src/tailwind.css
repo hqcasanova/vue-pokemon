@@ -41,16 +41,28 @@
 
 @layer base {
   html {
-    @apply font-lato text-default text-black antialiased bg-light-primary;
+    @apply font-lato text-black antialiased bg-light-primary;
+    font-size: 100%;
     line-height: 1.5;
     text-rendering: optimizeLegibility;
   }
 
   #app {
-    @apply p-11;
+    @apply px-10 py-6;
   }
 
   svg {
     @apply inline w-auto h-[1em];
+  }
+
+  @media screen and (min-width: 320px) {
+    html {
+      font-size: calc(16px + 6 * ((100vw - 320px) / 1680));
+    }
+  }
+  @media screen and (min-width: 1440px) {
+    html {
+      font-size: 20px;
+    }
   }
 }

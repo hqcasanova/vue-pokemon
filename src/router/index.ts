@@ -12,7 +12,7 @@ const router = createRouter({
         {
           path: 'pokemon/:id',
           name: 'stats',
-          props: true,
+          props: (route) => ({ id: Number(route.params.id) }),
           component: () => import('../views/StatsView.vue'),
         },
       ],
