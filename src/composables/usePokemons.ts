@@ -17,7 +17,7 @@ type UseTasks = {
   countDigits: ComputedRef<number>;
   fetchPokemons: () => void;
   fetchPokemon: (id: Pokemon['id']) => Promise<Pokemon | undefined>;
-  toggleLike: (id: Pokemon['id']) => void;
+  toggleLike: (pokemon: Pokemon) => void;
 };
 
 export default function (): UseTasks {
@@ -81,13 +81,15 @@ export default function (): UseTasks {
     }
   };
 
-  const toggleLike = (id: Pokemon['id']) => {
-    const pokemon = pokemons.value.find((pok) => pok.id === id);
+  const toggleLike = (pokemon: Pokemon) => {
+    const collPokemon = pokemons.value.find((pok) => pok.id === pokemon.id);
 
-    if (pokemon) {
+    if (collPokemon) {
+      collPokemon.isLiked = !pokemon.isLiked;
+    } else {
       pokemon.isLiked = !pokemon.isLiked;
-      saveLiked(id.toString());
     }
+    saveLiked(pokemon.id.toString());
   };
 
   return {

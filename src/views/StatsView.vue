@@ -46,7 +46,7 @@ const onCancelAction = () => {
         v-bind="pokemon"
         :id-length="countDigits"
         :is-like-disabled="isNotFound"
-        @update:is-liked="toggleLike(pokemon.id)"
+        @update:is-liked="toggleLike(pokemon)"
       />
     </template>
 

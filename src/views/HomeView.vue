@@ -49,7 +49,7 @@ const description = import.meta.env.VITE_META_DESCRIPTION;
           v-bind="pokemon"
           :id-length="countDigits"
           @click="onClick(pokemon)"
-          @update:is-liked="toggleLike(pokemon.id)"
+          @update:is-liked="toggleLike(pokemon)"
         />
       </template>
 
