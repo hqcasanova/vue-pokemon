@@ -21,7 +21,7 @@ const onClick = () => emit('update:modelValue', !props.modelValue);
 
 <template>
   <button
-    class="app-btn min-mobile-dims leading-none text-dark-secondary hover:text-liked disabled:text-lightest-grey"
+    class="app-btn min-mobile-dims leading-none text-dark-secondary hover:text-liked focus:shadow-current focus:shadow-lg disabled:text-lightest-grey rounded-full"
     :class="{ 'text-liked': props.modelValue }"
     @click.stop="onClick"
   >

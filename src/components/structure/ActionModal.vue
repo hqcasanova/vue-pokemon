@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { onClickOutside } from '@vueuse/core';
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 
 export type Props = {
   actionName?: string;
@@ -16,11 +18,15 @@ withDefaults(defineProps<Props>(), {
   actionType: '',
   isDisabledAction: false,
 });
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
 
 defineOptions({
   inheritAttrs: false,
 });
+
+const container = ref<HTMLElement | null>(null);
+onClickOutside(container, () => emit('cancel'));
+useFocusTrap(container, { immediate: true });
 
 onMounted(() => {
   document.body.classList.add('overflow-hidden');
@@ -28,12 +34,15 @@ onMounted(() => {
 onUnmounted(() => {
   document.body.classList.remove('overflow-hidden');
 });
+
+defineExpose({ container });
 </script>
 
 <template>
   <teleport to="body">
     <div class="fixed top-0 bottom-0 left-0 right-0 flex bg-black/40">
       <div
+        ref="container"
         v-bind="$attrs"
         class="relative"
         role="dialog"

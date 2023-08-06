@@ -24,6 +24,8 @@ const toRoute = computed(() => {
 
   return { name: props.statsRouteName, params: { id: props.destinationId } };
 });
+
+defineExpose({ toRoute });
 </script>
 
 <template>
