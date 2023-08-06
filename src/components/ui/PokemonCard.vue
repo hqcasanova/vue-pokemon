@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import brokenImg from '@/assets/broken.png';
+import { computed } from 'vue';
+import PokemonImg from '@/components/ui/PokemonImg.vue';
 import LikeButton from '@/components/ui/LikeButton.vue';
 
 import { type Pokemon } from '@/models/Pokemon';
 
 export type Props = Pokemon & {
   idLength?: number;
-  noImgPath?: string;
   isLikeDisabled?: boolean;
 };
 export type Emits = {
@@ -16,15 +15,13 @@ export type Emits = {
 
 const props = withDefaults(defineProps<Props>(), {
   idLength: 0,
-  noImgPath: brokenImg,
   isLikeDisabled: false,
 });
 const emit = defineEmits<Emits>();
 
-const imgIndex = ref<number>(0);
 const paddedId = computed(() => props.id.toString().padStart(props.idLength, '0'));
 const readableName = computed(() => props.name.replace('-', ' '));
-const url = computed(() => props.imgUrls[imgIndex.value] || props.noImgPath);
+
 const isLikedModel = computed({
   get() {
     return props.isLiked;
@@ -43,11 +40,12 @@ const isLikedModel = computed({
       class="absolute top-0 right-0 w-[2.1em] h-[2.1em]"
       :disabled="isLikeDisabled"
     />
-    <img
-      class="w-[6.2em] h-[6.2em] mx-auto mb-[1.4em]"
-      :src="url"
-      @error="imgIndex++"
-    />
+    <slot>
+      <pokemon-img
+        class="w-[6.2em] h-[6.2em] mx-auto mb-[1.4em]"
+        :urls="imgUrls"
+      />
+    </slot>
     <figcaption class="leading-[1.25em] font-bold">
       <span class="block first-letter:uppercase">{{ readableName }}</span>
       <span

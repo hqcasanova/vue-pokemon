@@ -51,10 +51,6 @@
     @apply px-10 py-6;
   }
 
-  svg {
-    @apply inline w-auto h-[1em];
-  }
-
   @media screen and (min-width: 320px) {
     html {
       font-size: calc(16px + 6 * ((100vw - 320px) / 1680));

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import XmarkSolid from '../icons/XmarkSolid.vue';
 
 export type Props = {
   actionName?: string;
@@ -71,13 +70,15 @@ onUnmounted(() => {
           </slot>
         </div>
 
-        <button
-          class="app-btn absolute top-0 right-0 flex justify-center items-center min-mobile-dims w-[1.56em] h-[1.56em] -mt-[0.72em] -mr-[0.78em] bg-primary-states rounded-full"
-          type="button"
-          @click="$emit('cancel')"
-        >
-          <xmark-solid />
-        </button>
+        <slot name="navigation">
+          <button
+            class="app-btn absolute top-0 right-0 min-mobile-dims text-secondary-states text-4.5xl font-normal"
+            type="button"
+            @click="$emit('cancel')"
+          >
+            &times;
+          </button>
+        </slot>
       </div>
     </div>
   </teleport>

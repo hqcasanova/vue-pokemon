@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faXmark, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+
+import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import usePokemons from '@/composables/usePokemons';
 import ActionModal from '@/components/structure/ActionModal.vue';
+import PokemonImg from '@/components/ui/PokemonImg.vue';
 import PokemonCard from '@/components/ui/PokemonCard.vue';
+import NextButton from '@/components/ui/NextButton.vue';
 import ItemList from '@/components/structure/ItemList.vue';
 
 import Pokemon from '@/models/Pokemon';
@@ -14,17 +19,13 @@ export type Props = {
 const props = defineProps<Props>();
 
 const router = useRouter();
-const { isLoading, countDigits, fetchPokemon, toggleLike } = usePokemons();
+const { isLoading, countDigits, lastId, error, fetchPokemon, toggleLike } = usePokemons();
 
 const pokemon = ref<Pokemon>(new Pokemon(props.id));
-const isNotFound = ref<boolean>(false);
 
-onMounted(async () => {
+watchEffect(async () => {
   const data = await fetchPokemon(props.id);
-
-  if (!data) {
-    isNotFound.value = true;
-  } else {
+  if (data) {
     pokemon.value = data;
   }
 });
@@ -36,28 +37,38 @@ const onCancelAction = () => {
 
 <template>
   <action-modal
-    class="w-[85%] max-w-[75rem] flex m-auto text-[6vh] bg-secondary rounded-md"
-    :is-disabled-action="isLoading || isNotFound"
-    @cancel="onCancelAction"
+    class="flex flex-col lg:flex-row w-full text-[calc(1vh+1rem)] bg-secondary lg:w-[85%] lg:max-w-[75rem] lg:m-auto lg:landscape:text-[6vh] lg:rounded-md"
   >
     <template #before-content>
       <pokemon-card
-        class="w-[9.6em] rounded-l-md"
+        class="flex items-center justify-center lg:block lg:w-[9.6em] lg:rounded-l-md"
         v-bind="pokemon"
         :id-length="countDigits"
-        :is-like-disabled="isNotFound"
+        :is-like-disabled="!!error"
         @update:is-liked="toggleLike(pokemon)"
-      />
+      >
+        <pokemon-img
+          class="h-[3em] w-auto mr-[1em] lg:w-[6.2em] lg:h-[6.2em] lg:mx-auto lg:mb-[1.4em]"
+          :urls="pokemon.imgUrls"
+        />
+      </pokemon-card>
     </template>
 
     <template #default>
       <div class="overflow-y-auto absolute top-0 bottom-0 left-0 right-0 p-11 text-base">
         <div
-          v-if="isLoading || isNotFound"
-          class="absolute top-11 bottom-11 left-11 right-11 flex items-center justify-center text-center bg-lighter-grey/60 backdrop-blur-sm"
-          :class="{ 'text-danger font-normal': isNotFound }"
+          v-if="isLoading || error"
+          class="absolute top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center p-11 text-center bg-lighter-grey/60 backdrop-blur"
         >
-          {{ isNotFound ? 'Pokemon could not be found' : 'Loading stats...' }}
+          <font-awesome-icon
+            v-if="error"
+            class="mb-3 title-text"
+            :class="{ 'text-danger': error }"
+            :icon="faCircleExclamation"
+          />
+          <p class="text-xl">
+            {{ error ? 'Error encountered while retrieving stats' : 'Loading stats...' }}
+          </p>
         </div>
 
         <h2 class="mb-5 title-text leading-none">Stats</h2>
@@ -81,6 +92,34 @@ const onCancelAction = () => {
           </template>
         </item-list>
       </div>
+    </template>
+
+    <template #navigation>
+      <nav
+        class="flex min-mobile-dims p-[0.5em] lg:min-h-0 lg:min-w-0 lg:p-0 items-center justify-center"
+      >
+        <next-button
+          class="lg:absolute left-[-0.78em] w-[1.56em] h-[1.56em] scale-x-[-1]"
+          :destinationId="id - 1"
+          :first-id="1"
+          replace
+        />
+
+        <button
+          class="app-btn lg:absolute top-[-0.72em] right-[-0.78em] flex justify-center items-center min-mobile-dims w-[1.56em] h-[1.56em] mx-[1.5em] lg:mx-0 bg-primary-states rounded-full"
+          type="button"
+          @click="onCancelAction"
+        >
+          <font-awesome-icon :icon="faXmark" />
+        </button>
+
+        <next-button
+          class="lg:absolute right-[-0.78em] w-[1.56em] h-[1.56em]"
+          :destinationId="id + 1"
+          :last-id="lastId"
+          replace
+        />
+      </nav>
     </template>
   </action-modal>
 </template>

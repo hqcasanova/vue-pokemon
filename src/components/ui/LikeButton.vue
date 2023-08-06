@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import HeartSolid from '../icons/HeartSolid.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as fasHeart } from '@fortawesome/free-solid-svg-icons';
+import { computed } from 'vue';
 
 export type Props = {
   modelValue: boolean;
@@ -11,6 +14,8 @@ export type Emits = {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const icon = computed(() => (props.modelValue ? fasHeart : farHeart));
+
 const onClick = () => emit('update:modelValue', !props.modelValue);
 </script>
 
@@ -20,9 +25,9 @@ const onClick = () => emit('update:modelValue', !props.modelValue);
     :class="{ 'text-liked': props.modelValue }"
     @click.stop="onClick"
   >
-    <heart-solid
-      class="stroke-current"
-      :class="props.modelValue ? 'fill-current' : 'fill-none'"
+    <font-awesome-icon
+      :icon="icon"
+      class="fill-current"
     />
   </button>
 </template>

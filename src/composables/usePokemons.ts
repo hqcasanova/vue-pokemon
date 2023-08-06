@@ -14,6 +14,7 @@ type UseTasks = {
   pokemons: Ref<Pokemon[]>;
   isLoading: Ref<boolean>;
   error: Ref<string | Error>;
+  lastId: ComputedRef<number>;
   countDigits: ComputedRef<number>;
   fetchPokemons: () => void;
   fetchPokemon: (id: Pokemon['id']) => Promise<Pokemon | undefined>;
@@ -23,9 +24,8 @@ type UseTasks = {
 export default function (): UseTasks {
   const { isLiked, saveLiked } = useLikes();
 
-  const countDigits = computed(() => {
-    return count.value.toString().length;
-  });
+  const countDigits = computed(() => count.value.toString().length);
+  const lastId = computed(() => count.value - 1);
 
   const hydrateResources = (results: any[]) => {
     return results.map((res) => {
@@ -97,6 +97,7 @@ export default function (): UseTasks {
     isLoading,
     error,
     countDigits,
+    lastId,
     fetchPokemons,
     fetchPokemon,
     toggleLike,
